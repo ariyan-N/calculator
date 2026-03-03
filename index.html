@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartCalc Pro+</title>
+<title>SmartCalc Pro+ (Memory Free)</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
@@ -79,10 +79,7 @@ let isSecretMode=false;
 let isRandomMode=false;
 let isPrankMode=false;
 let customText="";
-let savedPin="";
 let calculatingDelay=800;
-
-loadSettings();
 
 function press(value){
 if(isOperator(value)){
@@ -129,7 +126,7 @@ catch{updateDisplay("Error"); expression="";}
 }
 
 function updateDisplay(value){document.getElementById("display").innerText=value;}
-function openSettings(){let pin=document.getElementById("pinInput").value;if(savedPin && pin!==savedPin){alert("Wrong PIN"); return;} document.getElementById("settingsModal").style.display="flex";}
+function openSettings(){document.getElementById("settingsModal").style.display="flex";}
 function closeSettings(){document.getElementById("settingsModal").style.display="none"; clearDisplay();}
 
 function saveSettings(){
@@ -144,16 +141,9 @@ if(randomChecked){customChecked=false; prankChecked=false; document.getElementBy
 if(prankChecked){customChecked=false; randomChecked=false; document.getElementById("secretToggle").checked=false; document.getElementById("randomToggle").checked=false;}
 
 isSecretMode=customChecked; isRandomMode=randomChecked; isPrankMode=prankChecked;
-savedPin=document.getElementById("pinInput").value;
 
-localStorage.setItem("calcData",JSON.stringify({customText,isSecretMode,isRandomMode,isPrankMode,savedPin}));
 closeSettings();
 clearDisplay();
-}
-
-function loadSettings(){
-let data=localStorage.getItem("calcData");
-if(data){let parsed=JSON.parse(data); customText=parsed.customText; isSecretMode=parsed.isSecretMode; isRandomMode=parsed.isRandomMode; isPrankMode=parsed.isPrankMode; savedPin=parsed.savedPin;}
 }
 
 /* Keyboard Support */
