@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecretCalc Pro+</title>
+<title>SmartCalc Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -18,7 +18,7 @@ background:linear-gradient(135deg,#141e30,#243b55);
 }
 
 .calculator{
-width:340px;
+width:360px;
 padding:25px;
 border-radius:25px;
 background:rgba(255,255,255,0.05);
@@ -40,7 +40,6 @@ display:flex;
 align-items:center;
 justify-content:flex-end;
 overflow:hidden;
-transition:0.2s;
 }
 
 .buttons{
@@ -90,7 +89,8 @@ animation:fadeIn 0.3s ease;
 }
 
 .modal-content h3{margin-bottom:15px;}
-.modal-content input, .modal-content select{
+
+.modal-content input{
 width:100%;
 padding:10px;
 border-radius:10px;
@@ -100,7 +100,10 @@ background:#2a2a2a;
 color:white;
 }
 
-.modal-content button{width:100%;margin-bottom:10px;}
+.modal-content button{
+width:100%;
+margin-bottom:10px;
+}
 
 @keyframes fadeIn{
 from{opacity:0;transform:scale(0.9);}
@@ -131,15 +134,20 @@ to{opacity:1;transform:scale(1);}
 <button class="operator" onclick="press('-')">−</button>
 
 <button onclick="press('0')">0</button>
-<button class="clear" onclick="clearDisplay()">C</button>
-<button class="equal" onclick="calculate()">=</button>
+<button onclick="press('.')">.</button>
+<button onclick="press('%')">%</button>
 <button class="operator" onclick="press('+')">+</button>
+
+<button class="clear" onclick="clearDisplay()">C</button>
+<button onclick="backspace()">⌫</button>
+<button class="equal" style="grid-column: span 2;" onclick="calculate()">=</button>
 </div>
 </div>
 
+<!-- SETTINGS -->
 <div class="modal" id="settingsModal">
 <div class="modal-content">
-<h3>Secret Settings</h3>
+<h3>Display Settings</h3>
 
 <input type="password" id="pinInput" placeholder="Set/Enter PIN (optional)">
 <input type="text" id="customTextInput" placeholder="Custom Secret Text">
@@ -153,7 +161,7 @@ to{opacity:1;transform:scale(1);}
 
 <label>
 <input type="checkbox" id="secretToggle">
-Enable Secret Mode
+Enable Custom Display Mode
 </label>
 
 <button class="equal" onclick="saveSettings()">Save</button>
@@ -173,13 +181,32 @@ let savedPin="";
 loadSettings();
 
 function press(value){
+if(isOperator(value)){
+if(expression==="" || isOperator(expression.slice(-1))) return;
+}
 expression+=value;
 updateDisplay(expression);
+}
+
+function isOperator(char){
+return ['+','-','*','/','%'].includes(char);
 }
 
 function clearDisplay(){
 expression="";
 updateDisplay("0");
+}
+
+function backspace(){
+expression=expression.slice(0,-1);
+updateDisplay(expression||"0");
+}
+
+function sanitizeExpression(expr){
+while(isOperator(expr.slice(-1))){
+expr=expr.slice(0,-1);
+}
+return expr;
 }
 
 function calculate(){
@@ -192,14 +219,17 @@ return;
 
 if(isSecretMode){
 showLoading(()=>{
-updateDisplay(customText || "Secret Mode");
+updateDisplay(customText || "Custom Mode");
 });
 expression="";
 return;
 }
 
 try{
-let result=eval(expression);
+let cleanExpr=sanitizeExpression(expression);
+if(cleanExpr==="") return;
+
+let result=eval(cleanExpr);
 updateDisplay(result);
 expression=result.toString();
 }catch{
@@ -213,13 +243,6 @@ let display=document.getElementById("display");
 display.innerText=value;
 display.style.color=textColor;
 display.style.fontSize=fontSize+"px";
-autoResize(display);
-}
-
-function autoResize(display){
-if(display.innerText.length>15){
-display.style.fontSize="18px";
-}
 }
 
 function showLoading(callback){
@@ -248,7 +271,7 @@ fontSize=document.getElementById("fontSizeSlider").value;
 delayTime=document.getElementById("delayInput").value;
 savedPin=document.getElementById("pinInput").value;
 
-localStorage.setItem("secretData",JSON.stringify({
+localStorage.setItem("calcData",JSON.stringify({
 customText,isSecretMode,textColor,fontSize,delayTime,savedPin
 }));
 
@@ -256,7 +279,7 @@ closeSettings();
 }
 
 function loadSettings(){
-let data=localStorage.getItem("secretData");
+let data=localStorage.getItem("calcData");
 if(data){
 let parsed=JSON.parse(data);
 customText=parsed.customText;
@@ -267,6 +290,22 @@ delayTime=parsed.delayTime;
 savedPin=parsed.savedPin;
 }
 }
+
+/* KEYBOARD SUPPORT */
+
+document.addEventListener("keydown",function(e){
+
+if(!isNaN(e.key)) press(e.key);
+
+if(['+','-','*','/','%','.'].includes(e.key)) press(e.key);
+
+if(e.key==="Enter") calculate();
+
+if(e.key==="Backspace") backspace();
+
+if(e.key==="Escape") clearDisplay();
+
+});
 
 window.addEventListener("beforeunload",()=>{
 isSecretMode=false;
