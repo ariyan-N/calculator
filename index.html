@@ -3,120 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartCalc Pro</title>
+<title>SmartCalc Pro+</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-
-body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:linear-gradient(135deg,#141e30,#243b55);
-}
-
-.calculator{
-width:360px;
-padding:25px;
-border-radius:25px;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(20px);
-box-shadow:0 20px 40px rgba(0,0,0,0.6);
-border:1px solid rgba(255,255,255,0.08);
-}
-
-.display{
-height:80px;
-background:rgba(0,0,0,0.6);
-border-radius:18px;
-padding:20px;
-font-size:28px;
-color:#00ffcc;
-text-align:right;
-margin-bottom:20px;
-display:flex;
-align-items:center;
-justify-content:flex-end;
-overflow:hidden;
-}
-
-.buttons{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:15px;
-}
-
-button{
-height:55px;
-border:none;
-border-radius:15px;
-font-size:18px;
-cursor:pointer;
-transition:0.25s;
-background:rgba(255,255,255,0.07);
-color:white;
-box-shadow:0 5px 15px rgba(0,0,0,0.4);
-}
-
+body{height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#141e30,#243b55);}
+.calculator{width:360px;padding:25px;border-radius:25px;background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);box-shadow:0 20px 40px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.08);}
+.display{height:80px;background:rgba(0,0,0,0.6);border-radius:18px;padding:20px;font-size:28px;color:#00ffcc;text-align:right;margin-bottom:20px;display:flex;align-items:center;justify-content:flex-end;overflow:hidden;transition:0.2s;}
+.buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;}
+button{height:55px;border:none;border-radius:15px;font-size:18px;cursor:pointer;transition:0.25s;background:rgba(255,255,255,0.07);color:white;box-shadow:0 5px 15px rgba(0,0,0,0.4);}
 button:hover{transform:translateY(-3px);background:rgba(255,255,255,0.15);}
-
 .operator{color:#00ffc3;}
 .equal{background:#00ffc3;color:black;font-weight:600;}
 .equal:hover{background:#00d9a6;}
 .clear{color:#ff4d4d;}
-
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-display:none;
-justify-content:center;
-align-items:center;
-background:rgba(0,0,0,0.75);
-}
-
-.modal-content{
-width:320px;
-background:#1c1c1c;
-padding:25px;
-border-radius:20px;
-color:white;
-animation:fadeIn 0.3s ease;
-}
-
-.modal-content h3{margin-bottom:15px;}
-
-.modal-content input{
-width:100%;
-padding:10px;
-border-radius:10px;
-border:none;
-margin-bottom:15px;
-background:#2a2a2a;
-color:white;
-}
-
-.modal-content button{
-width:100%;
-margin-bottom:10px;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:scale(0.9);}
-to{opacity:1;transform:scale(1);}
-}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,0.75);}
+.modal-content{width:350px;background:#1c1c1c;padding:25px;border-radius:20px;color:white;animation:fadeIn 0.3s ease;}
+.modal-content h3{text-align:center;margin-bottom:15px;color:#00ffcc;font-weight:600;}
+.modal-content label{display:block;margin-bottom:5px;margin-top:10px;color:white;font-weight:500;}
+.modal-content input[type=text], .modal-content input[type=password]{width:100%;padding:10px;border-radius:10px;border:none;margin-bottom:15px;background:#2a2a2a;color:white;}
+.modal-content button{width:100%;margin-bottom:10px;padding:10px;border:none;border-radius:12px;background:#00ffc3;color:black;font-weight:600;cursor:pointer;}
+.modal-content button:hover{background:#00d9a6;}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
 </style>
 </head>
-
 <body>
 
 <div class="calculator">
 <div class="display" id="display">0</div>
-
 <div class="buttons">
 <button onclick="press('7')">7</button>
 <button onclick="press('8')">8</button>
@@ -144,27 +58,17 @@ to{opacity:1;transform:scale(1);}
 </div>
 </div>
 
-<!-- SETTINGS -->
 <div class="modal" id="settingsModal">
 <div class="modal-content">
-<h3>Display Settings</h3>
-
+<h3>Calculator Modes</h3>
 <input type="password" id="pinInput" placeholder="Set/Enter PIN (optional)">
-<input type="text" id="customTextInput" placeholder="Custom Secret Text">
-<input type="color" id="textColorPicker" value="#00ffcc">
+<input type="text" id="customTextInput" placeholder="Custom Text">
 
-<label>Font Size</label>
-<input type="range" id="fontSizeSlider" min="18" max="40" value="28">
+<label><input type="checkbox" id="secretToggle"> Custom Text Mode</label>
+<label><input type="checkbox" id="randomToggle"> Random Result Mode</label>
+<label><input type="checkbox" id="prankToggle"> Prank Mode (2+1 → 21)</label>
 
-<label>Loading Delay (ms)</label>
-<input type="number" id="delayInput" value="800">
-
-<label>
-<input type="checkbox" id="secretToggle">
-Enable Custom Display Mode
-</label>
-
-<button class="equal" onclick="saveSettings()">Save</button>
+<button onclick="saveSettings()">Save Settings</button>
 <button onclick="closeSettings()">Close</button>
 </div>
 </div>
@@ -172,11 +76,11 @@ Enable Custom Display Mode
 <script>
 let expression="";
 let isSecretMode=false;
+let isRandomMode=false;
+let isPrankMode=false;
 let customText="";
-let textColor="#00ffcc";
-let fontSize=28;
-let delayTime=800;
 let savedPin="";
+let calculatingDelay=800;
 
 loadSettings();
 
@@ -188,127 +92,77 @@ expression+=value;
 updateDisplay(expression);
 }
 
-function isOperator(char){
-return ['+','-','*','/','%'].includes(char);
-}
-
-function clearDisplay(){
-expression="";
-updateDisplay("0");
-}
-
-function backspace(){
-expression=expression.slice(0,-1);
-updateDisplay(expression||"0");
-}
-
-function sanitizeExpression(expr){
-while(isOperator(expr.slice(-1))){
-expr=expr.slice(0,-1);
-}
-return expr;
-}
+function isOperator(char){return ['+','-','*','/','%'].includes(char);}
+function clearDisplay(){expression=""; updateDisplay("0");}
+function backspace(){expression=expression.slice(0,-1); updateDisplay(expression||"0");}
+function sanitizeExpression(expr){while(isOperator(expr.slice(-1))){expr=expr.slice(0,-1);} return expr;}
 
 function calculate(){
-
-if(expression==="0+0"){
-openSettings();
-expression="";
-return;
-}
-
-if(isSecretMode){
-showLoading(()=>{
-updateDisplay(customText || "Custom Mode");
-});
-expression="";
-return;
-}
-
-try{
+if(expression==="0+0"){openSettings(); expression=""; return;}
 let cleanExpr=sanitizeExpression(expression);
 if(cleanExpr==="") return;
 
-let result=eval(cleanExpr);
-updateDisplay(result);
-expression=result.toString();
-}catch{
-updateDisplay("Error");
-expression="";
-}
-}
-
-function updateDisplay(value){
-let display=document.getElementById("display");
-display.innerText=value;
-display.style.color=textColor;
-display.style.fontSize=fontSize+"px";
-}
-
-function showLoading(callback){
+if(isSecretMode){
 updateDisplay("Calculating...");
-setTimeout(callback,delayTime);
-}
-
-function openSettings(){
-let pin=document.getElementById("pinInput").value;
-if(savedPin && pin!==savedPin){
-alert("Wrong PIN");
+setTimeout(()=>{updateDisplay(customText||"Custom Mode"); expression="";}, calculatingDelay);
 return;
 }
-document.getElementById("settingsModal").style.display="flex";
+
+if(isPrankMode){let nums=expression.match(/\d+/g)||[]; updateDisplay(nums.join('')); expression=nums.join(''); return;}
+
+if(isRandomMode){
+try{
+let orig=eval(cleanExpr);
+let variation=Math.max(1, Math.floor(Math.abs(orig)*0.3));
+let sign=Math.random()<0.5?-1:1;
+let approx=orig + Math.floor(Math.random()*variation+1)*sign;
+if(approx===orig){approx+=sign;} // never exact
+updateDisplay(approx);
+expression=approx.toString();
+return;
+}catch{updateDisplay("Error"); expression="";}
+return;
 }
 
-function closeSettings(){
-document.getElementById("settingsModal").style.display="none";
+try{let result=eval(cleanExpr); updateDisplay(result); expression=result.toString();}
+catch{updateDisplay("Error"); expression="";}
 }
+
+function updateDisplay(value){document.getElementById("display").innerText=value;}
+function openSettings(){let pin=document.getElementById("pinInput").value;if(savedPin && pin!==savedPin){alert("Wrong PIN"); return;} document.getElementById("settingsModal").style.display="flex";}
+function closeSettings(){document.getElementById("settingsModal").style.display="none"; clearDisplay();}
 
 function saveSettings(){
 customText=document.getElementById("customTextInput").value;
-isSecretMode=document.getElementById("secretToggle").checked;
-textColor=document.getElementById("textColorPicker").value;
-fontSize=document.getElementById("fontSizeSlider").value;
-delayTime=document.getElementById("delayInput").value;
+let customChecked=document.getElementById("secretToggle").checked;
+let randomChecked=document.getElementById("randomToggle").checked;
+let prankChecked=document.getElementById("prankToggle").checked;
+
+/* Only one mode at a time */
+if(customChecked){randomChecked=false; prankChecked=false; document.getElementById("randomToggle").checked=false; document.getElementById("prankToggle").checked=false;}
+if(randomChecked){customChecked=false; prankChecked=false; document.getElementById("secretToggle").checked=false; document.getElementById("prankToggle").checked=false;}
+if(prankChecked){customChecked=false; randomChecked=false; document.getElementById("secretToggle").checked=false; document.getElementById("randomToggle").checked=false;}
+
+isSecretMode=customChecked; isRandomMode=randomChecked; isPrankMode=prankChecked;
 savedPin=document.getElementById("pinInput").value;
 
-localStorage.setItem("calcData",JSON.stringify({
-customText,isSecretMode,textColor,fontSize,delayTime,savedPin
-}));
-
+localStorage.setItem("calcData",JSON.stringify({customText,isSecretMode,isRandomMode,isPrankMode,savedPin}));
 closeSettings();
+clearDisplay();
 }
 
 function loadSettings(){
 let data=localStorage.getItem("calcData");
-if(data){
-let parsed=JSON.parse(data);
-customText=parsed.customText;
-isSecretMode=parsed.isSecretMode;
-textColor=parsed.textColor;
-fontSize=parsed.fontSize;
-delayTime=parsed.delayTime;
-savedPin=parsed.savedPin;
-}
+if(data){let parsed=JSON.parse(data); customText=parsed.customText; isSecretMode=parsed.isSecretMode; isRandomMode=parsed.isRandomMode; isPrankMode=parsed.isPrankMode; savedPin=parsed.savedPin;}
 }
 
-/* KEYBOARD SUPPORT */
-
+/* Keyboard Support */
 document.addEventListener("keydown",function(e){
-
 if(!isNaN(e.key)) press(e.key);
-
 if(['+','-','*','/','%','.'].includes(e.key)) press(e.key);
-
 if(e.key==="Enter") calculate();
-
 if(e.key==="Backspace") backspace();
-
 if(e.key==="Escape") clearDisplay();
-
-});
-
-window.addEventListener("beforeunload",()=>{
-isSecretMode=false;
 });
 </script>
 
